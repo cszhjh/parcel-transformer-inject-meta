@@ -1,0 +1,56 @@
+{
+  "name": "@parcel/transformer-inject-meta",
+  "version": "0.0.0",
+  "private": false,
+  "description": "Injects <head> content such as <meta>, title, and the html lang attribute into HTML files.",
+  "keywords": [
+    "parcel",
+    "plugin",
+    "@parcel/transformer-inject-meta"
+  ],
+  "homepage": "https://github.com/cszhjh/parcel-transformer-inject-meta",
+  "bugs": {
+    "url": "https://github.com/cszhjh/parcel-transformer-inject-meta/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cszhjh/parcel-transformer-inject-meta.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "cszhjh",
+    "email": "cszhjh@gmail.com"
+  },
+  "publisher": "cszhjh",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "source": "src/main.ts",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "release": "pnpm build && vr release",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@parcel/plugin": "^2.15.2"
+  },
+  "devDependencies": {
+    "@varlet/release": "^0.4.1",
+    "tsup": "^8.4.0",
+    "vitest": "^3.1.2"
+  },
+  "packageManager": "pnpm@10.8.0"
+}
