@@ -1,12 +1,12 @@
 {
-  "name": "@parcel/transformer-inject-meta",
+  "name": "parcel-transformer-inject-meta",
   "version": "0.0.0",
   "private": false,
   "description": "Injects <head> content such as <meta>, title, and the html lang attribute into HTML files.",
   "keywords": [
     "parcel",
     "plugin",
-    "@parcel/transformer-inject-meta"
+    "parcel-transformer-inject-meta"
   ],
   "homepage": "https://github.com/cszhjh/parcel-transformer-inject-meta",
   "bugs": {

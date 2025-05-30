@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@parcel/config-default": "^2.15.2",
-    "@parcel/transformer-inject-meta": "workspace:*",
-    "parcel": "^2.14.0"
+    "parcel": "^2.14.0",
+    "parcel-transformer-inject-meta": "workspace:*"
   }
 }
