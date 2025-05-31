@@ -45,9 +45,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@parcel/plugin": "^2.15.2"
+    "@parcel/plugin": "^2.15.2",
+    "micromatch": "^4.0.8",
+    "rattail": "^1.0.19"
   },
   "devDependencies": {
+    "@types/micromatch": "^4.0.9",
     "@varlet/release": "^0.4.1",
     "tsup": "^8.4.0",
     "vitest": "^3.1.2"

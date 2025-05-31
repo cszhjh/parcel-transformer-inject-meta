@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest'
-import { transform } from '../main'
+import { transform } from '../transform'
 
 const template = `
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <title>Parcel Vanilla App</title>
   </head>
@@ -13,13 +13,37 @@ const template = `
 </html>
 `
 
+const config = {
+  content: {
+    title: 'title',
+    description: 'description',
+    lang: 'en',
+  },
+}
+
 test('basic usage', () => {
-  expect(transform(template)).toMatchInlineSnapshot(`
+  expect(
+    transform({
+      code: template,
+      projectRoot: '.',
+      config,
+      filePath: 'src/index.html',
+    }),
+  ).toMatchInlineSnapshot(`
     "
     <!doctype html>
-    <html>
+    <html lang="en">
       <head>
-        <title>Parcel Vanilla App</title>
+    		<meta charset="UTF-8" />
+    		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover" />
+    		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    		<meta name="google" content="notranslate" />
+    		<meta name="format-detection" content="telephone=no" />
+    		<meta name="description" content="description" />
+    		<meta property="og:title" content="title" />
+    		<meta property="og:description" content="description" />
+
+        <title>title</title>
       </head>
       <body>
         <h1>Parcel Vanilla App</h1>

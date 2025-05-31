@@ -1,0 +1,38 @@
+{
+  "builtinMetas": {
+    "charset": true,
+    "viewport": true,
+    "compatibleIE": true,
+    "notranslate": true,
+    "notelephone": true,
+    "og": true
+  },
+  "content": {
+    "title": "title",
+    "description": "description",
+    "lang": "en"
+  },
+  "entries": {
+    "src/index.html": {
+      "content": {
+        "title": "Parcel Vanilla Starter",
+        "description": "A simple starter for Parcel",
+        "lang": "zh-CN",
+        "metas": [{ "name": "viewport", "content": "width=device-width, initial-scale=1" }]
+      }
+    },
+    "src/en.html": {
+      "content": {
+        "title": "Parcel Vanilla Starter",
+        "description": "A simple starter for Parcel",
+        "lang": "zh-CN",
+        "metas": [{ "name": "viewport", "content": "width=device-width, initial-scale=1" }]
+      }
+    },
+    "src/cn/**.html": {
+      "content": {
+        "title": "cn"
+      }
+    }
+  }
+}

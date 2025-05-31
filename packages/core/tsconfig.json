@@ -7,7 +7,7 @@
     "declaration": true,
     "noUnusedLocals": true,
     "esModuleInterop": true,
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "sourceMap": false,
     "noEmitOnError": true,
     "noUnusedParameters": true,
