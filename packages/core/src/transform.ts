@@ -39,7 +39,7 @@ export function getMetaConfig(options: Options) {
       },
       content,
     },
-    entryConfigs,
+    ...entryConfigs,
   )
 }
 
