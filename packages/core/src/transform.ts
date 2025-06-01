@@ -1,7 +1,7 @@
 import micromatch from 'micromatch'
 import { merge } from 'rattail'
-import { BuiltinMeta, MetaConfig, Options } from './types'
-import { getRelativePath, insertToHead, replaceHtmlLang, replaceTitle } from './util'
+import { BuiltinMeta, MetadataOption, Options } from './types'
+import { getRelativePath, insertToHead, replaceHtmlLang, replaceTitle, toMetaString } from './util'
 
 const builtinMeta = {
   charset: true,
@@ -10,26 +10,26 @@ const builtinMeta = {
   notranslate: true,
   notelephone: true,
   og: true,
-}
-const builtinMetaCode: Record<Exclude<keyof BuiltinMeta, 'og'>, string> = {
-  charset: '<meta charset="UTF-8" />',
-  viewport:
-    '<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover" />',
-  compatibleIE: '<meta http-equiv="X-UA-Compatible" content="IE=edge" />',
-  notranslate: '<meta name="google" content="notranslate" />',
-  notelephone: '<meta name="format-detection" content="telephone=no" />',
 } as const
 
-export function getMetaConfig(options: Options): Omit<MetaConfig, 'entries'> {
+const builtinMetaProp: Record<Exclude<keyof BuiltinMeta, 'og'>, Record<string, string>> = {
+  charset: { charset: 'UTF-8' },
+  viewport: {
+    name: 'viewport',
+    content: 'width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover',
+  },
+  compatibleIE: { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
+  notranslate: { name: 'google', content: 'notranslate' },
+  notelephone: { name: 'format-detection', content: 'telephone=no' },
+}
+
+export function getMetaConfig(options: Options) {
   const { projectRoot, filePath, config } = options
   const { entries = {}, builtinMeta: globBuiltinMeta, content } = config
-
   const relativePath = getRelativePath(projectRoot, filePath)
-  const entriesMeta = Object.entries(entries).filter(([glob]) => micromatch.isMatch(relativePath, glob))
-  const mergedEntriesConfig = entriesMeta.reduce(
-    (config, [_, value]) => merge(config, value),
-    {} as Omit<MetaConfig, 'entries'>,
-  )
+  const entryConfigs = Object.entries(entries)
+    .filter(([glob]) => micromatch.isMatch(relativePath, glob))
+    .map(([_, config]) => config)
 
   return merge(
     {
@@ -39,44 +39,48 @@ export function getMetaConfig(options: Options): Omit<MetaConfig, 'entries'> {
       },
       content,
     },
-    mergedEntriesConfig,
+    entryConfigs,
   )
 }
 
-export function transform(options: Options) {
-  const config = getMetaConfig(options)
-  const { code } = options
-  const { builtinMeta, content: { lang, title, description, keywords, metas, og } = {} } = config
-  const ogContent = {
-    ...og,
-    title: og?.title ?? title,
-    description: og?.description ?? description,
+export function getBuiltinMetas(builtinMeta: BuiltinMeta) {
+  return Object.entries(builtinMeta)
+    .filter(([key, value]) => key !== 'og' && value)
+    .map(([key]) => builtinMetaProp[key as Exclude<keyof BuiltinMeta, 'og'>])
+}
+
+export function getOpenGraphMetas(enable: boolean, content: MetadataOption['og']) {
+  if (!enable || !content) {
+    return []
   }
 
-  const builtinCode = Object.entries(builtinMetaCode).reduce(
-    (code, [key, meta]) => code + (builtinMeta?.[key as keyof BuiltinMeta] ? `\t\t${meta}\n` : ''),
-    '',
-  )
+  return Object.entries(content).map(([property, content]) => ({ property: `og:${property}`, content }))
+}
+
+export function transform(options: Options) {
+  const { code } = options
+  const { builtinMeta, content: { lang, title, description, keywords, metas, og } = {} } = getMetaConfig(options)
+  const ogContent = {
+    title: og?.title ?? title,
+    description: og?.description ?? description,
+    ...og,
+  }
 
   const mergedMetas = [
+    ...getBuiltinMetas(builtinMeta),
+    ...getOpenGraphMetas(builtinMeta.og, ogContent),
+    ...(metas || []),
     { name: 'description', content: description },
     { name: 'keywords', content: keywords },
-    ...(builtinMeta?.og
-      ? Object.entries(ogContent).map(([property, content]) => ({ property: `og:${property}`, content }))
-      : []),
-    ...(metas || []),
-  ].filter(({ content }) => content)
-  const metaCode = mergedMetas.reduce((code, meta) => {
-    const props = Object.entries(meta).map(([property, value]) => `${property}="${value}"`)
-    return code + `\t\t<meta ${props.join(' ')} />\n`
-  }, '')
+  ]
 
   let newCode = code
+
   if (title) {
     newCode = replaceTitle(newCode, title)
   }
 
   newCode = replaceHtmlLang(newCode, lang)
-  newCode = insertToHead(newCode, builtinCode + metaCode)
+  newCode = insertToHead(newCode, toMetaString(mergedMetas))
   return newCode
 }

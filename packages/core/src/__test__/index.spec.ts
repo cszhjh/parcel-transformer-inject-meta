@@ -39,9 +39,10 @@ test('basic usage', () => {
     		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
     		<meta name="google" content="notranslate" />
     		<meta name="format-detection" content="telephone=no" />
-    		<meta name="description" content="description" />
     		<meta property="og:title" content="title" />
     		<meta property="og:description" content="description" />
+    		<meta name="description" content="description" />
+    		<meta name="keywords" content="" />
 
         <title>title</title>
       </head>

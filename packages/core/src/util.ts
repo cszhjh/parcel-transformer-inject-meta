@@ -28,3 +28,10 @@ export function replaceTitle(code: string, title: string) {
 export function getRelativePath(from: string, to: string) {
   return path.relative(from, to).replace(/\\/g, '/')
 }
+
+export function toMetaString(metas: Record<string, string | undefined>[]) {
+  return metas.reduce((code, meta) => {
+    const props = Object.entries(meta).map(([property, value]) => `${property}="${value ?? ''}"`)
+    return code + `\t\t<meta ${props.join(' ')} />\n`
+  }, '')
+}
